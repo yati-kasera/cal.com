@@ -28,21 +28,24 @@ export const apiKeysRouter = router({
     .input(
       z.object({
         appId: z.string().optional().nullable(),
+        teamId: z.number().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.apiKey.findFirst({
-        where: {
-          AND: [
-            {
-              userId: ctx.user.id,
-            },
-            {
-              appId: input.appId,
-            },
-          ],
-        },
-      });
+      if (!input.teamId) {
+        return await ctx.prisma.apiKey.findMany({
+          where: {
+            AND: [
+              {
+                OR: [{ userId: ctx.user.id }, { teamId: input.teamId }],
+              },
+              {
+                appId: input.appId,
+              },
+            ],
+          },
+        });
+      }
     }),
   create: authedProcedure
     .input(
@@ -51,6 +54,7 @@ export const apiKeysRouter = router({
         expiresAt: z.date().optional().nullable(),
         neverExpires: z.boolean().optional(),
         appId: z.string().optional().nullable(),
+        teamId: z.number().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -62,6 +66,7 @@ export const apiKeysRouter = router({
         data: {
           id: v4(),
           userId: ctx.user.id,
+          teamId: input.teamId,
           ...input,
           // And here we pass a null to expiresAt if never expires is true. otherwise just pass expiresAt from input
           expiresAt: neverExpires ? null : input.expiresAt,

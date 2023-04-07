@@ -53,6 +53,27 @@ export const viewerTeamsRouter = router({
       };
     }),
   // Returns teams I a member of
+  listOwnedTeams: authedProcedure.query(async ({ ctx }) => {
+    const memberships = await ctx.prisma.membership.findMany({
+      where: {
+        userId: ctx.user.id,
+        role: {
+          not: MembershipRole.MEMBER,
+        },
+      },
+      include: {
+        team: true,
+      },
+      orderBy: { role: "desc" },
+    });
+
+    return memberships.map(({ team, ...membership }) => ({
+      role: membership.role,
+      accepted: membership.accepted,
+      ...team,
+    }));
+  }),
+  // Returns teams I am adming or owner of
   list: authedProcedure.query(async ({ ctx }) => {
     const memberships = await ctx.prisma.membership.findMany({
       where: {
