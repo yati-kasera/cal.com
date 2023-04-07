@@ -27,12 +27,34 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const webhook = await prisma.webhook.findFirst({
     where: {
       id,
+      OR: [
+        {
+          userId: !validKey.teamId ? validKey.userId : 0,
+        },
+        {
+          teamId: validKey.teamId,
+        },
+      ],
     },
   });
 
-  if (webhook?.eventTriggers.includes(WebhookTriggerEvents.MEETING_ENDED)) {
+  if (!webhook) {
+    return res.status(401).json({ message: "Not authorized to delete this webhooks" });
+  }
+
+  if (webhook.eventTriggers.includes(WebhookTriggerEvents.MEETING_ENDED)) {
     const bookingsWithScheduledJobs = await prisma.booking.findMany({
       where: {
+        OR: [
+          {
+            eventType: {
+              teamId: validKey.teamId,
+            },
+          },
+          {
+            userId: !validKey.teamId ? validKey.userId : 0,
+          },
+        ],
         userId: validKey.userId,
         scheduledJobs: {
           isEmpty: false,

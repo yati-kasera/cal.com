@@ -1912,12 +1912,14 @@ async function handler(
       : WebhookTriggerEvents.BOOKING_CREATED;
     const subscriberOptions = {
       userId: organizerUser.id,
+      teamId: eventType.team?.id || undefined,
       eventTypeId,
       triggerEvent: eventTrigger,
     };
 
     const subscriberOptionsMeetingEnded = {
       userId: organizerUser.id,
+      teamId: eventType.team?.id || undefined,
       eventTypeId,
       triggerEvent: WebhookTriggerEvents.MEETING_ENDED,
     };

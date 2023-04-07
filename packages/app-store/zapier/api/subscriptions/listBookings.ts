@@ -23,7 +23,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const bookings = await prisma.booking.findMany({
       take: 3,
       where: {
-        userId: validKey.userId,
+        OR: [
+          {
+            userId: !validKey.teamId ? validKey.userId : 0,
+          },
+          {
+            eventType: {
+              teamId: validKey.teamId,
+            },
+          },
+        ],
       },
       orderBy: {
         id: "desc",
@@ -56,6 +65,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             currency: true,
             length: true,
             bookingFields: true,
+            team: true,
           },
         },
         attendees: {

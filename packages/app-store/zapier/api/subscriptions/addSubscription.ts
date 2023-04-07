@@ -27,6 +27,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       data: {
         id: v4(),
         userId: validKey.userId,
+        teamId: validKey.teamId,
         eventTriggers: [triggerEvent],
         subscriberUrl,
         active: true,
@@ -38,7 +39,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       //schedule job for already existing bookings
       const bookings = await prisma.booking.findMany({
         where: {
-          userId: validKey.userId,
+          OR: [
+            {
+              eventType: {
+                teamId: validKey.teamId,
+              },
+            },
+            {
+              userId: !validKey.teamId ? validKey.userId : 0,
+            },
+          ],
           startTime: {
             gte: new Date(),
           },

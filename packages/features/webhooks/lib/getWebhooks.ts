@@ -1,23 +1,28 @@
-import { PrismaClient, WebhookTriggerEvents } from "@prisma/client";
+import type { PrismaClient, WebhookTriggerEvents } from "@prisma/client";
 
 import defaultPrisma from "@calcom/prisma";
 
 export type GetSubscriberOptions = {
   userId: number;
+  teamId?: number;
   eventTypeId: number;
   triggerEvent: WebhookTriggerEvents;
 };
 
 const getWebhooks = async (options: GetSubscriberOptions, prisma: PrismaClient = defaultPrisma) => {
-  const { userId, eventTypeId } = options;
+  const { userId, eventTypeId, teamId } = options;
+
   const allWebhooks = await prisma.webhook.findMany({
     where: {
       OR: [
         {
-          userId,
+          userId: !teamId ? userId : 0,
         },
         {
           eventTypeId,
+        },
+        {
+          teamId,
         },
       ],
       AND: {
@@ -31,13 +36,15 @@ const getWebhooks = async (options: GetSubscriberOptions, prisma: PrismaClient =
     },
     select: {
       id: true,
+      userId: true,
+      teamId: true,
+      eventTypeId: true,
       subscriberUrl: true,
       payloadTemplate: true,
       appId: true,
       secret: true,
     },
   });
-
   return allWebhooks;
 };
 
