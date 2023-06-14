@@ -42,6 +42,12 @@ const middleware: NextMiddleware = async (req) => {
     return NextResponse.redirect(req.nextUrl);
   }
 
+  if (isIpInBanlist(req) && url.pathname !== "/api/nope") {
+    // DDOS Prevention: Immediately end request with no response - Avoids a redirect as well initiated by NextAuth on invalid callback
+    req.nextUrl.pathname = "/api/nope";
+    return NextResponse.redirect(req.nextUrl);
+  }
+
   if (!url.pathname.startsWith("/api")) {
     //
     // NOTE: When tRPC hits an error a 500 is returned, when this is received
