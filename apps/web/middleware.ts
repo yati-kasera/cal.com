@@ -20,13 +20,11 @@ const middleware: NextMiddleware = async (req) => {
    */
   // Enable New Booker for All but embed Requests
   if (process.env.NEW_BOOKER_ENABLED_FOR_NON_EMBED === "1" && !isEmbedRequest) {
-    req.cookies.set("new-booker-enabled", "1");
     requestHeaders.set("new-booker-enabled", "1");
   }
 
   // Enable New Booker for Embed Requests
   if (process.env.NEW_BOOKER_ENABLED_FOR_EMBED === "1" && isEmbedRequest) {
-    req.cookies.set("new-booker-enabled", "1");
     requestHeaders.set("new-booker-enabled", "1");
   }
 
