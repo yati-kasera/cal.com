@@ -12,7 +12,7 @@ const middleware: NextMiddleware = async (req) => {
   const url = req.nextUrl;
   const requestHeaders = new Headers(req.headers);
   const { currentOrgDomain, isValidOrgDomain } = orgDomainConfig(req.headers.get("host") ?? "");
-  const isEmbedRequest = typeof url.searchParams.get("embed") === "string";
+  const isEmbedRequest = url.pathname.endsWith("/embed");
 
   /**
    * We are using env variable to toggle new-booker because using flags would be an unnecessary delay for booking pages
