@@ -229,27 +229,27 @@ const nextConfig = {
       {
         source: `/:user((?!${pages.join("|")}).*)/:type`,
         destination: "/new-booker/:user/:type",
-        has: [{ type: "header", key: "new-booker-enabled" }],
+        has: [{ type: "header", key: "x-cal-new-booker-enabled" }],
       },
       {
         source: `/:user((?!${pages.join("|")}).*)/:type/embed`,
         destination: "/new-booker/:user/:type/embed",
-        has: [{ type: "header", key: "new-booker-enabled" }],
+        has: [{ type: "header", key: "x-cal-new-booker-enabled" }],
       },
       {
         source: "/team/:slug/:type",
         destination: "/new-booker/team/:slug/:type",
-        has: [{ type: "header", key: "new-booker-enabled" }],
+        has: [{ type: "header", key: "x-cal-new-booker-enabled" }],
       },
       {
         source: "/team/:slug/:type/embed",
         destination: "/new-booker/team/:slug/:type/embed",
-        has: [{ type: "header", key: "new-booker-enabled" }],
+        has: [{ type: "header", key: "x-cal-new-booker-enabled" }],
       },
       {
         source: "/d/:link/:slug",
         destination: "/new-booker/d/:link/:slug",
-        has: [{ type: "header", key: "new-booker-enabled" }],
+        has: [{ type: "header", key: "x-cal-new-booker-enabled" }],
       },
 
       /**

@@ -20,12 +20,12 @@ const middleware: NextMiddleware = async (req) => {
    */
   // Enable New Booker for All but embed Requests
   if (process.env.NEW_BOOKER_ENABLED_FOR_NON_EMBED === "1" && !isEmbedRequest) {
-    requestHeaders.set("new-booker-enabled", "1");
+    requestHeaders.set("x-cal-new-booker-enabled", "1");
   }
 
   // Enable New Booker for Embed Requests
   if (process.env.NEW_BOOKER_ENABLED_FOR_EMBED === "1" && isEmbedRequest) {
-    requestHeaders.set("new-booker-enabled", "1");
+    requestHeaders.set("x-cal-new-booker-enabled", "1");
   }
 
   // Make sure we are in the presence of an organization
